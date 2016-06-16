@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="heroTrainerApp">
+<head>
+	<meta charset="UTF-8">
+	<title>Hero Trainer</title>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+	<link rel="stylesheet" href="style.css">
+</head>
+<body>
+	<div class="wrapper">
+		<div class="container" ng-controller="HeroController">
+			<div class="row">
+				<div class="hero-frame col-xs-3" id="heroFrame">
+					<img src="{{hero.image}}" alt="" class="hero-image">
+					<table class="table-bordered table-hover hero-stats">
+						<thead>
+							<tr>
+								<td class="col-xs-4"></td>
+								<th class="col-xs-5">current</th>
+								<th class="col-xs-3">change</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th>Name</th>
+								<td>{{hero.name}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Level</th>
+								<td>{{hero.level}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Fame</th>
+								<td>{{hero.fame}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Gold</th>
+								<td>{{hero.gold}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Strength</th>
+								<td>{{hero.strength}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Dexterity</th>
+								<td>{{hero.dexterity}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Agility</th>
+								<td>{{hero.agility}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Skill</th>
+								<td>{{hero.skill}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Weapon</th>
+								<td>{{hero.weapon.name}}</td>
+								<td></td>
+							</tr>
+							<tr>
+								<th>Armor</th>
+								<td>{{hero.armor.name}}</td>
+								<td></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-xs-9 action-list" ng-controller="TrainingController">
+					<div class="row">
+						<button class="btn btn-primary" ng-click="trainingOptions()">Training</button>
+					</div>
+					<div class="row" ng-show="showMainTrainingsOptions" ng-repeat="option in skillTrainingsOptions">
+						<button class="btn btn-success col-xs-3">
+							<p>{{option.name}}</p>
+							<span>{{option.tip}}</span>
+						</button>
+						<button class="btn btn-info col-xs-3" ng-repeat="suboption in option.options">
+							<p>{{suboption.name}}</p>
+							<span><small>{{suboption.cost}}</small></span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
+	<script src="hero.js"></script>
+	<script src="fight.js"></script>
+	<script src="training.js"></script>
+</body>
+</html>

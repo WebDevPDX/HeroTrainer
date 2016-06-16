@@ -1,0 +1,13 @@
+
+.hero-image {
+	width: 150px;
+}
+
+.hero-stats {
+	margin-top: 15px;
+}
+
+.btn {
+    white-space: normal;
+    word-wrap: break-word; 
+}
