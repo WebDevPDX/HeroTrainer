@@ -34,27 +34,32 @@
 							<tr>
 								<th>Fame</th>
 								<td>{{hero.fame}}</td>
-								<td></td>
+								<td>{{heroChange.fame}}</td>
 							</tr>
 							<tr>
 								<th>Gold</th>
 								<td>{{hero.gold}}</td>
-								<td></td>
+								<td>{{heroChange.gold}}</td>
+							</tr>
+							<tr>
+								<th>HP</th>
+								<td>{{hero.HP}}</td>
+								<td>{{heroChange.gold}}</td>
 							</tr>
 							<tr>
 								<th>Strength</th>
 								<td>{{hero.strength}}</td>
-								<td></td>
+								<td>{{heroChange.strength}}</td>
 							</tr>
 							<tr>
 								<th>Dexterity</th>
 								<td>{{hero.dexterity}}</td>
-								<td></td>
+								<td>{{heroChange.dexterity}}</td>
 							</tr>
 							<tr>
 								<th>Agility</th>
 								<td>{{hero.agility}}</td>
-								<td></td>
+								<td>{{heroChange.agility}}</td>
 							</tr>
 							<tr>
 								<th>Skill</th>
@@ -64,7 +69,7 @@
 							<tr>
 								<th>Weapon</th>
 								<td>{{hero.weapon.name}}</td>
-								<td></td>
+								<td>{{heroChange.skill}}</td>
 							</tr>
 							<tr>
 								<th>Armor</th>
@@ -74,19 +79,30 @@
 						</tbody>
 					</table>
 				</div>
-				<div class="col-xs-9 action-list" ng-controller="TrainingController">
+				<div class="col-xs-9 action-list">
 					<div class="row">
 						<button class="btn btn-primary" ng-click="trainingOptions()">Training</button>
+						<button class="btn btn-default pull-right">{{currentWeek}}/500</button>
 					</div>
 					<div class="row" ng-show="showMainTrainingsOptions" ng-repeat="option in skillTrainingsOptions">
-						<button class="btn btn-success col-xs-3">
+						<button class="btn btn-success col-xs-3 training-options-button disabled button-color-black">
 							<p>{{option.name}}</p>
 							<span>{{option.tip}}</span>
 						</button>
-						<button class="btn btn-info col-xs-3" ng-repeat="suboption in option.options">
-							<p>{{suboption.name}}</p>
-							<span><small>{{suboption.cost}}</small></span>
+						<button class="btn btn-info col-xs-3 training-options-button" ng-repeat="subOption in option.options" ng-click="whichButton(subOption.index)">
+							<p>{{subOption.name}}</p>
+							<span><small>{{subOption.cost}}</small></span>
 						</button>
+					</div>
+					<div class="row" ng-show="showTrainingResults" >
+						<div class="col-xs-6 col-xs-offset-3" ng-repeat="result in trainingResults">
+							<div class="col-xs-6">{{result.weekday}}</div>
+							<div class="col-xs-6">{{result.result}}</div>
+						</div>
+						<div class="col-xs-6 col-xs-offset-3 total-training-result">
+							<div class="col-xs-6">Total Gain: </div>
+							<div class="col-xs-6">{{totalTrainingResult}}</div>
+						</div>
 					</div>
 				</div>
 			</div>
