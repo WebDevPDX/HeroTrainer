@@ -1,3 +1,5 @@
+//TODO : Change HP to Endurance in training
+
 'use strict';
 
 angular.module('heroTrainerApp', [])
@@ -9,6 +11,7 @@ angular.module('heroTrainerApp', [])
 			image : 'images/hero.jpg',
 			fame : '',
 			level : 2,
+			endurance : 5,
 			strength : 5,
 			dexterity : 5,
 			agility : 5,
@@ -17,13 +20,11 @@ angular.module('heroTrainerApp', [])
 			minDmg : 1,
 			maxDmg : 3, 
 			//armor : armor[0],
-			HP : 10,
-			gold : 90
+			HP : '',
+			gold : 100
 		}
 
-		///////////////////////////
-		// HERO TRAINING         //
-		///////////////////////////
+		$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
 
 		$scope.heroChange = {};
 
@@ -31,6 +32,7 @@ angular.module('heroTrainerApp', [])
 			$scope.heroChange = {
 				fame : '',
 				level : '',
+				endurance : '',
 				strength : '',
 				dexterity : '',
 				agility : '',
@@ -43,7 +45,13 @@ angular.module('heroTrainerApp', [])
 		$scope.currentWeek = 0;
 		$scope.maxTime = 260;
 
+		///////////////////////////
+		// HERO TRAINING         //
+		///////////////////////////
+
 		$scope.showMainTrainingsOptions = false;
+		$scope.showTrainingResults = false;
+		$scope.showMainWorkingOptions = false;
 		$scope.showTrainingResults = false;
 
 		$scope.goldCheck = function(price) {
@@ -406,15 +414,18 @@ angular.module('heroTrainerApp', [])
 		}
 
 		$scope.trainingOptions = function() {
+			console.log('training');
 			if (!$scope.showMainTrainingsOptions) {
 				$scope.showMainTrainingsOptions = true;
 				$scope.showTrainingResults = false;
+				$scope.showMainWorkingOptions = false;
+				$scope.showWorkingResults = false;
 			} else {
 				$scope.showMainTrainingsOptions = false;
 			}
 		}
 
-		$scope.whichButton = function(index) {
+		$scope.whichButtonTraining = function(index) {
 			if (index === 'end-1') {
 				enduranceTrainOne();
 			} else if (index === 'end-2') {
@@ -452,6 +463,241 @@ angular.module('heroTrainerApp', [])
 		// HERO WORK             //
 		///////////////////////////
 
+		$scope.findSkill = function(index) {
+			if (index === 'farm-1' || index === 'farm-2' || index === 'farm-3') {
+				return $scope.hero.endurance;
+			} else if (index === 'smith-1' || index === 'smith-2' || index === 'smith-3') {
+				return $scope.hero.strength;
+			} else if (index === 'bard-1' || index === 'bard-2' || index === 'bard-3') {
+				return $scope.hero.dexterity;
+			} else if (index === 'hunt-1' || index === 'hunt-2' || index === 'hunt-3') {
+				return $scope.hero.agility;
+			} else if (index === 'guard-1' || index === 'guard-2' || index === 'guard-3') {
+				return $scope.hero.skill;
+			}
+		}
+
+		$scope.skillCheck = function(skillLevel, required) {
+			if (skillLevel >= required) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		$scope.workOptions = [
+			{
+				name : 'Farming',
+				tip : 'Help with the chores on one of the many farms around your village',
+				options : [
+					{
+						index : 'farm-1',
+						name : 'Muck the stables',
+						required : 0
+					},
+					{
+						index : 'farm-2',
+						name : 'Herd the sheeps and cows from and to the barn',
+						required : 25
+					},
+					{
+						index : 'farm-3',
+						name : 'Work the fields - plowing, tilling, watering, harvesting...',
+						required : 50
+					},
+				]
+			},
+			{
+				name : 'Smithing',
+				tip : 'Work in the village smithy, make money and gain strength',
+				options : [
+					{
+						index : 'smith-1',
+						name : 'Break charcoal - dirty but simple',
+						required : 0
+					},
+					{
+						index : 'smith-2',
+						name : 'Work the bellows and stack ingots',
+						required : 25
+					},
+					{
+						index : 'smith-3',
+						name : 'Work alongside the smith swinging a hammer',
+						required : 50
+					},
+				]
+			},
+			{
+				name : 'Bard\'ing',
+				tip : 'A master bard lives in your village and he allows you to work for him',
+				options : [
+					{
+						index : 'bard-1',
+						name : 'Throw your master balls and other items for juggling',
+						required : 0
+					},
+					{
+						index : 'bard-2',
+						name : 'Throw knives against audience participants',
+						required : 25
+					},
+					{
+						index : 'bard-3',
+						name : 'Entertain the audience by juggling, dancing and hopping around',
+						required : 50
+					},
+				]
+			},
+			{
+				name : 'Hunting',
+				tip : 'Help the hunters of your village',
+				options : [
+					{
+						index : 'hunt-1',
+						name : 'Run around the forest and scare animals out of their hiding places',
+						required : 0
+					},
+					{
+						index : 'hunt-2',
+						name : 'Scout the forest silently and track the prey',
+						required : 25
+					},
+					{
+						index : 'hunt-3',
+						name : 'Handle a bow and go hunting yourself',
+						required : 50
+					},
+				]
+			},
+			{
+				name : 'Guardsman',
+				tip : 'Provide safety to the villagers',
+				options : [
+					{
+						index : 'guard-1',
+						name : 'Help the gate guards by bringing them their lunch',
+						required : 0
+					},
+					{
+						index : 'guard-2',
+						name : 'Patrol the market and make sure no pickpockets are around',
+						required : 25
+					},
+					{
+						index : 'guard-3',
+						name : 'Join the fight against the thieves guild',
+						required : 50
+					},
+				]
+			},
+		]
+
+		$scope.workingResults = [
+			{
+				weekday : 'Monday',
+				result : ''
+			},
+			{
+				weekday : 'Tuesday',
+				result : ''
+			},
+			{
+				weekday : 'Wednesday',
+				result : ''
+			},
+			{
+				weekday : 'Thursday',
+				result : ''
+			},
+			{
+				weekday : 'Friday',
+				result : ''
+			},
+			{
+				weekday : 'Saturday',
+				result : ''
+			},
+			{
+				weekday : 'Sunday',
+				result : 'Day Off'
+			},
+		]
+
+		$scope.totalWorkGoldIncrease = 0;
+		$scope.totalWorkSkillIncrease = 0;
+
+		function workingCalculation(skillLevel, difficultyCheck, goldIncrease, statIncrease, skillName) {
+			resetHeroChangeObject();
+			$scope.totalWorkGoldIncrease = 0;
+			$scope.totalWorkSkillIncrease = 0;
+			for (var i = 0; i < $scope.workingResults.length - 1; i++) {
+				if (skillLevel / 500 + difficultyCheck > parseFloat(Math.random()).toFixed(2)) {
+					$scope.workingResults[i].result = 'Success';
+					$scope.totalWorkGoldIncrease += goldIncrease;
+					$scope.totalWorkSkillIncrease += statIncrease;
+				} else {
+					$scope.workingResults[i].result = 'Failed';
+				}
+			}
+			$scope.totalWorkSkillIncrease = Math.floor($scope.totalWorkSkillIncrease);
+			$scope.hero.gold += $scope.totalWorkGoldIncrease;
+			$scope.hero[skillName] += $scope.totalWorkSkillIncrease;
+			$scope.heroChange.gold += $scope.totalWorkGoldIncrease;
+			$scope.heroChange[skillName] += $scope.totalWorkSkillIncrease;
+			$scope.showMainWorkingOptions = false;
+			$scope.showWorkingResults = true;
+			$scope.currentWeek += 1;
+		}
+
+		$scope.whichButtonWork = function(index) {
+			if (index === 'farm-1') {
+				//values passed: 
+				//base successchance: 0.85 for T1 job, 0.75 for T2 job, 0.65 for T3 job
+				//gold gain: 1 for T1 job, 1 for T2 job, 5 for T3 job per successful day
+				//skill gain: 0.2 for T1 job, 0.4 for T2 job, 0.7 for T3 job per successful day
+				workingCalculation($scope.hero.endurance, 0.85, 1, 0.2, 'endurance');
+			} else if (index === 'farm-2') {
+				workingCalculation($scope.hero.endurance, 0.75, 3, 0.4, 'endurance');
+			} else if (index === 'farm-3') {
+				workingCalculation($scope.hero.endurance, 0.65, 5, 0.7, 'endurance');
+			} else if (index === 'smith-1') {
+				workingCalculation($scope.hero.strength, 0.85, 1, 0.2, 'strength');
+			} else if (index === 'smith-2') {
+				workingCalculation($scope.hero.strength, 0.75, 3, 0.4, 'strength');
+			} else if (index === 'smith-3') {
+				workingCalculation($scope.hero.strength, 0.65, 5, 0.7, 'strength');
+			} else if (index === 'bard-1') {
+				workingCalculation($scope.hero.dexterity, 0.85, 1, 0.2, 'dexterity');
+			} else if (index === 'bard-2') {
+				workingCalculation($scope.hero.dexterity, 0.75, 3, 0.4, 'dexterity');
+			} else if (index === 'bard-3') {
+				workingCalculation($scope.hero.dexterity, 0.65, 5, 0.7, 'dexterity');
+			} else if (index === 'hunt-1') {
+				workingCalculation($scope.hero.agility, 0.85, 1, 0.2, 'agility');
+			} else if (index === 'hunt-2') {
+				workingCalculation($scope.hero.agility, 0.75, 3, 0.4, 'agility');
+			} else if (index === 'hunt-3') {
+				workingCalculation($scope.hero.agility, 0.65, 5, 0.7, 'agility');
+			} else if (index === 'guard-1') {
+				workingCalculation($scope.hero.skill, 0.85, 1, 0.2, 'skill');
+			} else if (index === 'guard-2') {
+				workingCalculation($scope.hero.skill, 0.75, 3, 0.4, 'skill');
+			} else if (index === 'guard-3') {
+				workingCalculation($scope.hero.skill, 0.65, 5, 0.7, 'skill');
+			}
+		}
+
+		$scope.workingOptions = function() {
+			if (!$scope.showMainWorkingOptions) {
+				$scope.showMainWorkingOptions = true;
+				$scope.showTrainingResults = false;
+				$scope.showMainTrainingsOptions = false;
+				$scope.showWorkingResults = false;
+			} else {
+				$scope.showMainWorkingOptions = false;
+			}
+		}
 
 	}])
 

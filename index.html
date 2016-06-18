@@ -10,6 +10,8 @@
 	<div class="wrapper">
 		<div class="container" ng-controller="HeroController">
 			<div class="row">
+
+				<!-- HERO FRAME -->
 				<div class="hero-frame col-xs-3" id="heroFrame">
 					<img src="{{hero.image}}" alt="" class="hero-image">
 					<table class="table-bordered table-hover hero-stats">
@@ -40,6 +42,11 @@
 								<th>HP</th>
 								<td>{{hero.HP}}</td>
 								<td ng-class="greenRedCheck(heroChange.HP)">{{heroChange.HP}}</td>
+							</tr>
+							<tr>
+								<th>Endurance</th>
+								<td>{{hero.endurance}}</td>
+								<td ng-class="greenRedCheck(heroChange.endurance)">{{heroChange.endurance}}</td>
 							</tr>
 							<tr>
 								<th>Strength</th>
@@ -75,22 +82,30 @@
 					</table>
 					<pre>{{heroChange | json}}</pre>
 				</div>
+
+				<!-- RIGHT SIDE - INTERACTIONS -->
 				<div class="col-xs-9 action-list">
-					<!-- <pre>{{skillTrainingsOptions | json}}</pre> -->
+
+					<!-- MENU BUTTONS -->
 					<div class="row">
 						<button class="btn btn-primary" ng-click="trainingOptions()">Training</button>
-						<button class="btn btn-default pull-right">{{currentWeek}}/{{maxTime}}</button>
+						<button class="btn btn-warning" ng-click="workingOptions()">Working</button>
+						<button class="btn btn-default pull-right">Week {{currentWeek}} of {{maxTime}}</button>
 					</div>
-					<div class="row" ng-show="showMainTrainingsOptions" ng-repeat="option in skillTrainingsOptions">
+
+					<!-- TRAINING OPTIONS -->
+					<div class="row" ng-show="showMainTrainingsOptions" ng-repeat="trainingOption in skillTrainingsOptions">
 						<div class="btn btn-success col-xs-3 training-options-button button-color-black">
-							<p>{{option.name}}</p>
-							<span>{{option.tip}}</span>
+							<p>{{trainingOption.name}}</p>
+							<span>{{trainingOption.tip}}</span>
 						</div>
-						<button class="btn btn-primary col-xs-3 training-options-button" ng-repeat="subOption in option.options"  ng-disabled="goldCheck(subOption.price)" ng-click="whichButton(subOption.index)">
+						<button class="btn btn-primary col-xs-3 training-options-button" ng-repeat="subOption in trainingOption.options"  ng-disabled="goldCheck(subOption.price)" ng-click="whichButtonTraining(subOption.index)">
 							<p>{{subOption.name}}</p>
 							<span><small>{{subOption.cost}}</small></span>
 						</button>
 					</div>
+
+					<!-- TRAINING RESULTS -->
 					<div class="row" ng-show="showTrainingResults">
 						<div class="col-xs-6 col-xs-offset-3" ng-repeat="result in trainingResults">
 							<div class="col-xs-6">{{result.weekday}}</div>
@@ -101,6 +116,34 @@
 							<div class="col-xs-6">{{totalTrainingResult}}</div>
 						</div>
 					</div>
+
+					<!-- WORK OPTIONS -->
+					<div class="row" ng-show="showMainWorkingOptions" ng-repeat="workOption in workOptions">
+						<div class="btn btn-success col-xs-3 working-options-button button-color-black">
+							<p>{{workOption.name}}</p>
+							<span>{{workOption.tip}}</span>
+						</div>
+						<button class="btn btn-warning col-xs-3 working-options-button" ng-repeat="subOption in workOption.options" ng-disabled="skillCheck(findSkill(subOption.index), subOption.required)" ng-click="whichButtonWork(subOption.index)">
+							<p>{{subOption.name}}</p>
+						</button>
+					</div>
+
+					<!-- WORKING RESULTS -->
+					<div class="row" ng-show="showWorkingResults">
+						<div class="col-xs-6 col-xs-offset-3" ng-repeat="result in workingResults">
+							<div class="col-xs-6">{{result.weekday}}</div>
+							<div class="col-xs-6" ng-class="successFailCheck(result.result)">{{result.result}}</div>
+						</div>
+						<div class="col-xs-6 col-xs-offset-3 total-working-result">
+							<div class="col-xs-6">Earnings: </div>
+							<div class="col-xs-6">{{totalWorkGoldIncrease}}</div>
+						</div>
+						<div class="col-xs-6 col-xs-offset-3 total-working-result">
+							<div class="col-xs-6">Skill Increase: </div>
+							<div class="col-xs-6">{{totalWorkSkillIncrease}}</div>
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>

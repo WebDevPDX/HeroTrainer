@@ -19,7 +19,7 @@
     word-wrap: break-word; 
 }
 
-.training-options-button {
+.training-options-button, .working-options-button {
 	height: 110px;
 }
 
@@ -27,7 +27,7 @@
 	color: #000;
 }
 
-.total-training-result {
+.total-training-result, .total-training-result {
 	margin-top: 20px;
 }
 
@@ -40,3 +40,4 @@
 	color: red;
 	font-weight: bold;
 }
+
