@@ -10,6 +10,10 @@
 	margin-top: 15px;
 }
 
+.hero-stats tbody td {
+	text-align: center;
+}
+
 .btn {
     white-space: normal;
     word-wrap: break-word; 
@@ -25,4 +29,14 @@
 
 .total-training-result {
 	margin-top: 20px;
+}
+
+.green {
+	color: green;
+	font-weight: bold;
+}
+
+.red {
+	color: red;
+	font-weight: bold;
 }

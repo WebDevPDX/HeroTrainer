@@ -27,49 +27,44 @@
 								<td></td>
 							</tr>
 							<tr>
-								<th>Level</th>
-								<td>{{hero.level}}</td>
-								<td></td>
-							</tr>
-							<tr>
 								<th>Fame</th>
 								<td>{{hero.fame}}</td>
-								<td>{{heroChange.fame}}</td>
+								<td ng-class="greenRedCheck(heroChange.fame)">{{heroChange.fame}}</td>
 							</tr>
 							<tr>
 								<th>Gold</th>
 								<td>{{hero.gold}}</td>
-								<td>{{heroChange.gold}}</td>
+								<td ng-class="greenRedCheck(heroChange.gold)">{{heroChange.gold}}</td>
 							</tr>
 							<tr>
 								<th>HP</th>
 								<td>{{hero.HP}}</td>
-								<td>{{heroChange.gold}}</td>
+								<td ng-class="greenRedCheck(heroChange.HP)">{{heroChange.HP}}</td>
 							</tr>
 							<tr>
 								<th>Strength</th>
 								<td>{{hero.strength}}</td>
-								<td>{{heroChange.strength}}</td>
+								<td ng-class="greenRedCheck(heroChange.strength)">{{heroChange.strength}}</td>
 							</tr>
 							<tr>
 								<th>Dexterity</th>
 								<td>{{hero.dexterity}}</td>
-								<td>{{heroChange.dexterity}}</td>
+								<td ng-class="greenRedCheck(heroChange.dexterity)">{{heroChange.dexterity}}</td>
 							</tr>
 							<tr>
 								<th>Agility</th>
 								<td>{{hero.agility}}</td>
-								<td>{{heroChange.agility}}</td>
+								<td ng-class="greenRedCheck(heroChange.agility)">{{heroChange.agility}}</td>
 							</tr>
 							<tr>
 								<th>Skill</th>
 								<td>{{hero.skill}}</td>
-								<td></td>
+								<td ng-class="greenRedCheck(heroChange.skill)">{{heroChange.skill}}</td>
 							</tr>
 							<tr>
 								<th>Weapon</th>
 								<td>{{hero.weapon.name}}</td>
-								<td>{{heroChange.skill}}</td>
+								<td></td>
 							</tr>
 							<tr>
 								<th>Armor</th>
@@ -78,26 +73,28 @@
 							</tr>
 						</tbody>
 					</table>
+					<pre>{{heroChange | json}}</pre>
 				</div>
 				<div class="col-xs-9 action-list">
+					<!-- <pre>{{skillTrainingsOptions | json}}</pre> -->
 					<div class="row">
 						<button class="btn btn-primary" ng-click="trainingOptions()">Training</button>
-						<button class="btn btn-default pull-right">{{currentWeek}}/500</button>
+						<button class="btn btn-default pull-right">{{currentWeek}}/{{maxTime}}</button>
 					</div>
 					<div class="row" ng-show="showMainTrainingsOptions" ng-repeat="option in skillTrainingsOptions">
-						<button class="btn btn-success col-xs-3 training-options-button disabled button-color-black">
+						<div class="btn btn-success col-xs-3 training-options-button button-color-black">
 							<p>{{option.name}}</p>
 							<span>{{option.tip}}</span>
-						</button>
-						<button class="btn btn-info col-xs-3 training-options-button" ng-repeat="subOption in option.options" ng-click="whichButton(subOption.index)">
+						</div>
+						<button class="btn btn-primary col-xs-3 training-options-button" ng-repeat="subOption in option.options"  ng-disabled="goldCheck(subOption.price)" ng-click="whichButton(subOption.index)">
 							<p>{{subOption.name}}</p>
 							<span><small>{{subOption.cost}}</small></span>
 						</button>
 					</div>
-					<div class="row" ng-show="showTrainingResults" >
+					<div class="row" ng-show="showTrainingResults">
 						<div class="col-xs-6 col-xs-offset-3" ng-repeat="result in trainingResults">
 							<div class="col-xs-6">{{result.weekday}}</div>
-							<div class="col-xs-6">{{result.result}}</div>
+							<div class="col-xs-6" ng-class="successFailCheck(result.result)">{{result.result}}</div>
 						</div>
 						<div class="col-xs-6 col-xs-offset-3 total-training-result">
 							<div class="col-xs-6">Total Gain: </div>

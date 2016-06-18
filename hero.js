@@ -3,6 +3,7 @@
 angular.module('heroTrainerApp', [])
 
 	.controller('HeroController', ['$scope', function($scope) {
+
 		$scope.hero = {
 			name : 'noname',
 			image : 'images/hero.jpg',
@@ -17,32 +18,42 @@ angular.module('heroTrainerApp', [])
 			maxDmg : 3, 
 			//armor : armor[0],
 			HP : 10,
-			gold : 100
+			gold : 90
 		}
 
-		$scope.heroChange = {
-			fame : '',
-			level : '',
-			strength : '',
-			dexterity : '',
-			agility : '',
-			skill : '',
-			HP : '',
-			gold : ''
-		}
+		///////////////////////////
+		// HERO TRAINING         //
+		///////////////////////////
 
-		$scope.currentWeek = 0;
+		$scope.heroChange = {};
 
-		$scope.goldCheck = function(price) {
-			if ($scope.hero.gold > price) {
-				$scope.enoughGold = true;
-			} else {
-				$scope.enoughGold = false;
+		function resetHeroChangeObject() {
+			$scope.heroChange = {
+				fame : '',
+				level : '',
+				strength : '',
+				dexterity : '',
+				agility : '',
+				skill : '',
+				HP : '',
+				gold : ''
 			}
 		}
 
+		$scope.currentWeek = 0;
+		$scope.maxTime = 260;
+
 		$scope.showMainTrainingsOptions = false;
 		$scope.showTrainingResults = false;
+
+		$scope.goldCheck = function(price) {
+			if ($scope.hero.gold >= price * -1) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
 		$scope.skillTrainingsOptions = [
 			{
 				name : 'Endurance',
@@ -214,6 +225,7 @@ angular.module('heroTrainerApp', [])
 		$scope.totalTrainingResult = 0;
 
 		function trainingCalculation(successCheck, increase, cost, skillGain) {
+			resetHeroChangeObject();
 			$scope.totalTrainingResult = 0;
 			for (var i = 0; i < $scope.trainingResults.length; i++) {
 				if (parseFloat(Math.random()).toFixed(2) <= successCheck) {
@@ -233,6 +245,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.85, $scope.skillTrainingsOptions[0].options[0].increase);
 			$scope.hero.HP += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[0].options[0].price;
+			$scope.heroChange.HP = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[0].options[0].price;
 			//console.log($scope.heroChange);
 		}
 		function enduranceTrainTwo() {
@@ -241,6 +255,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.75, $scope.skillTrainingsOptions[0].options[1].increase);
 			$scope.hero.HP += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[0].options[1].price;
+			$scope.heroChange.HP = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[0].options[1].price;
 			//console.log($scope.heroChange);
 		}
 		function enduranceTrainThree() {
@@ -249,6 +265,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.65, $scope.skillTrainingsOptions[0].options[2].increase);
 			$scope.hero.HP += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[0].options[2].price;
+			$scope.heroChange.HP = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[0].options[2].price;
 			//console.log($scope.heroChange);
 		}
 		function strengthTrainOne() {
@@ -257,6 +275,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.85, $scope.skillTrainingsOptions[1].options[0].increase);
 			$scope.hero.strength += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[1].options[0].price;
+			$scope.heroChange.strength = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[1].options[0].price;
 			//console.log($scope.heroChange);
 		}
 		function strengthTrainTwo() {
@@ -265,6 +285,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.75, $scope.skillTrainingsOptions[1].options[1].increase);
 			$scope.hero.strength += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[1].options[1].price;
+			$scope.heroChange.strength = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[1].options[1].price;
 			//console.log($scope.heroChange);
 		}
 		function strengthTrainThree() {
@@ -273,6 +295,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.65, $scope.skillTrainingsOptions[1].options[2].increase);
 			$scope.hero.strength += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[1].options[2].price;
+			$scope.heroChange.strength = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[1].options[2].price;
 			//console.log($scope.heroChange);
 		}
 		function dexterityTrainOne() {
@@ -281,6 +305,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.85, $scope.skillTrainingsOptions[2].options[0].increase);
 			$scope.hero.dexterity += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[2].options[0].price;
+			$scope.heroChange.dexterity = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[2].options[0].price;
 			//console.log($scope.heroChange);
 		}
 		function dexterityTrainTwo() {
@@ -289,6 +315,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.75, $scope.skillTrainingsOptions[2].options[1].increase);
 			$scope.hero.dexterity += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[2].options[1].price;
+			$scope.heroChange.dexterity = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[2].options[1].price;
 			//console.log($scope.heroChange);
 		}
 		function dexterityTrainThree() {
@@ -297,6 +325,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.65, $scope.skillTrainingsOptions[2].options[2].increase);
 			$scope.hero.dexterity += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[2].options[2].price;
+			$scope.heroChange.dexterity = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[2].options[2].price;
 			//console.log($scope.heroChange);
 		}
 		function agilityTrainOne() {
@@ -305,6 +335,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.85, $scope.skillTrainingsOptions[3].options[0].increase);
 			$scope.hero.agility += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[3].options[0].price;
+			$scope.heroChange.agility = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[3].options[0].price;
 			//console.log($scope.heroChange);
 		}
 		function agilityTrainTwo() {
@@ -313,6 +345,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.75, $scope.skillTrainingsOptions[3].options[1].increase);
 			$scope.hero.agility += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[3].options[1].price;
+			$scope.heroChange.agility = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[3].options[1].price;
 			//console.log($scope.heroChange);
 		}
 		function agilityTrainThree() {
@@ -321,6 +355,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.65, $scope.skillTrainingsOptions[3].options[2].increase);
 			$scope.hero.agility += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[3].options[2].price;
+			$scope.heroChange.agility = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[3].options[2].price;
 			//console.log($scope.heroChange);
 		}
 		function skillTrainOne() {
@@ -329,6 +365,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.85, $scope.skillTrainingsOptions[4].options[0].increase);
 			$scope.hero.skill += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[4].options[0].price;
+			$scope.heroChange.skill = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[4].options[0].price;
 			//console.log($scope.heroChange);
 		}
 		function skillTrainTwo() {
@@ -337,6 +375,8 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.75, $scope.skillTrainingsOptions[4].options[1].increase);
 			$scope.hero.skill += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[4].options[1].price;
+			$scope.heroChange.skill = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[4].options[1].price;
 			//console.log($scope.heroChange);
 		}
 		function skillTrainThree() {
@@ -345,12 +385,30 @@ angular.module('heroTrainerApp', [])
 			trainingCalculation(0.65, $scope.skillTrainingsOptions[4].options[2].increase);
 			$scope.hero.skill += $scope.totalTrainingResult;
 			$scope.hero.gold += $scope.skillTrainingsOptions[4].options[2].price;
+			$scope.heroChange.skill = $scope.totalTrainingResult;
+			$scope.heroChange.gold = $scope.skillTrainingsOptions[4].options[2].price;
 			//console.log($scope.heroChange);
+		}
+
+		$scope.greenRedCheck = function(check) {
+			if (check > 0) {
+				return 'green';
+			} else if (check < 0) {
+				return 'red';
+			}
+		}
+		$scope.successFailCheck = function(check) {
+			if (check === 'Success') {
+				return 'green';
+			} else if (check === 'Failed') {
+				return 'red';
+			}
 		}
 
 		$scope.trainingOptions = function() {
 			if (!$scope.showMainTrainingsOptions) {
 				$scope.showMainTrainingsOptions = true;
+				$scope.showTrainingResults = false;
 			} else {
 				$scope.showMainTrainingsOptions = false;
 			}
@@ -389,6 +447,11 @@ angular.module('heroTrainerApp', [])
 				skillTrainThree();
 			}
 		}
+
+		///////////////////////////
+		// HERO WORK             //
+		///////////////////////////
+
 
 	}])
 
