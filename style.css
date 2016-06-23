@@ -19,6 +19,10 @@
     word-wrap: break-word; 
 }
 
+.container-row {
+	margin-top: 20px;
+}
+
 .training-options-button, .working-options-button {
 	height: 110px;
 }
@@ -39,5 +43,9 @@
 .red {
 	color: red;
 	font-weight: bold;
+}
+
+.fight-screen-button {
+	margin: 20px auto;
 }
 

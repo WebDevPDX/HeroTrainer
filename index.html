@@ -13,7 +13,7 @@
 
 				<!-- HERO FRAME -->
 				<div class="hero-frame col-xs-3" id="heroFrame">
-					<img src="{{hero.image}}" alt="" class="hero-image">
+					<img src="{{hero.image}}" alt="Image of the hero" class="hero-image">
 					<table class="table-bordered table-hover hero-stats">
 						<thead>
 							<tr>
@@ -80,7 +80,6 @@
 							</tr>
 						</tbody>
 					</table>
-					<pre>{{heroChange | json}}</pre>
 				</div>
 
 				<!-- RIGHT SIDE - INTERACTIONS -->
@@ -90,11 +89,12 @@
 					<div class="row">
 						<button class="btn btn-primary" ng-click="trainingOptions()">Training</button>
 						<button class="btn btn-warning" ng-click="workingOptions()">Working</button>
+						<button class="btn btn-danger" ng-click="fightPreview()">Go looking for a fight</button>
 						<button class="btn btn-default pull-right">Week {{currentWeek}} of {{maxTime}}</button>
 					</div>
 
 					<!-- TRAINING OPTIONS -->
-					<div class="row" ng-show="showMainTrainingsOptions" ng-repeat="trainingOption in skillTrainingsOptions">
+					<div class="row container-row" ng-show="showMainTrainingsOptions" ng-repeat="trainingOption in skillTrainingsOptions">
 						<div class="btn btn-success col-xs-3 training-options-button button-color-black">
 							<p>{{trainingOption.name}}</p>
 							<span>{{trainingOption.tip}}</span>
@@ -106,7 +106,7 @@
 					</div>
 
 					<!-- TRAINING RESULTS -->
-					<div class="row" ng-show="showTrainingResults">
+					<div class="row container-row" ng-show="showTrainingResults">
 						<div class="col-xs-6 col-xs-offset-3" ng-repeat="result in trainingResults">
 							<div class="col-xs-6">{{result.weekday}}</div>
 							<div class="col-xs-6" ng-class="successFailCheck(result.result)">{{result.result}}</div>
@@ -118,7 +118,7 @@
 					</div>
 
 					<!-- WORK OPTIONS -->
-					<div class="row" ng-show="showMainWorkingOptions" ng-repeat="workOption in workOptions">
+					<div class="row container-row" ng-show="showMainWorkingOptions" ng-repeat="workOption in workOptions">
 						<div class="btn btn-success col-xs-3 working-options-button button-color-black">
 							<p>{{workOption.name}}</p>
 							<span>{{workOption.tip}}</span>
@@ -129,7 +129,7 @@
 					</div>
 
 					<!-- WORKING RESULTS -->
-					<div class="row" ng-show="showWorkingResults">
+					<div class="row container-row" ng-show="showWorkingResults">
 						<div class="col-xs-6 col-xs-offset-3" ng-repeat="result in workingResults">
 							<div class="col-xs-6">{{result.weekday}}</div>
 							<div class="col-xs-6" ng-class="successFailCheck(result.result)">{{result.result}}</div>
@@ -144,13 +144,38 @@
 						</div>
 					</div>
 
+					<!-- FIGHT PREVIEW -->
+					<div class="row container-row" ng-show="showFightOption">
+						<div class="col-xs-3 col-xs-offset-2">
+							<img src="{{monster.image}}" alt="Image of the monster" class="monster-image">
+						</div>
+						<div class="col-xs-5">
+							<p>You are fighting an {{monster.type}} equipped with <em class="red">{{monster.armor.name}}</em> and armed with <em class="red">{{monster.weapon.name}}</em>.</p>
+							<p>The {{monster.type}} looks {{comparisonObject.endurance}} enduring than you.</p>
+							<p>The {{monster.type}} looks {{comparisonObject.strength}} strong than you.</p>
+							<p>The {{monster.type}} looks {{comparisonObject.dexterity}} dextrous than you.</p>
+							<p>The {{monster.type}} looks {{comparisonObject.agility}} angile than you.</p>
+							<p>The {{monster.type}} looks {{comparisonObject.skill}} skillful than you.</p>
+							<button class="btn btn-success fight-screen-button" ng-click="fightPreview()">Nah, rather not...</button>
+							<button class="btn btn-danger fight-screen-button" ng-click="fight()">Let's rock and roll</button>
+							<strong>Remember: If your hero dies during a fight, the game will be over!</strong>
+						</div>
+					</div>
+
+					<!-- FIGHT RESULT -->
+					<div class="row container-row" ng-show="showCombatLog">
+						<h3 class="col-xs-3 col-xs-offset-3" ng-class="fightResultClass">{{fightResult}}</h3>
+						<button class="btn fight-screen-button" ng-click="movingOn()" ng-class="fightResultButtonClass">{{fightResultButtonText}}</button>
+						<div class="col-xs-6 col-xs-offset-3" ng-repeat="entry in fightLog">
+							<p>{{entry.result}}</p>						
+						</div>
+					</div>
+
 				</div>
 			</div>
 		</div>
 	</div>
 	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.9/angular.min.js"></script>
 	<script src="hero.js"></script>
-	<script src="fight.js"></script>
-	<script src="training.js"></script>
 </body>
 </html>

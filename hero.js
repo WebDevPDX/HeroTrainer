@@ -6,6 +6,61 @@ angular.module('heroTrainerApp', [])
 
 	.controller('HeroController', ['$scope', function($scope) {
 
+		$scope.showMainTrainingsOptions = false;
+		$scope.showTrainingResults = false;
+		$scope.showMainWorkingOptions = false;
+		$scope.showTrainingResults = false;
+		$scope.showFightOption = false;
+		$scope.showCombatLog = false;
+
+		var weapon = [
+			{	name : 'fists',
+				minDmg : 1,
+				maxDmg : 3
+			},
+			{	name : 'a stick',
+				minDmg : 2,
+				maxDmg : 3
+			},
+			{	name : 'a dagger',
+				minDmg : 2,
+				maxDmg : 5
+			},
+			{	name : 'a sword',
+				minDmg : 4,
+				maxDmg : 6
+			},
+			{	name : 'a battle axe',
+				minDmg : 3,
+				maxDmg : 8
+			},
+			{	name : 'a greatsword',
+				minDmg : 5,
+				maxDmg : 10
+			}
+		];
+
+		var armor = [
+			{	name : 'normal clothes',
+				protection : 1,
+			},
+			{	name : 'leather armor',
+				protection : 2,
+			},
+			{	name : 'reinforced leather armor',
+				protection : 3,
+			},
+			{	name : 'chain mail',
+				protection : 4,
+			},
+			{	name : 'plate mail',
+				protection : 5,
+			},
+			{	name : 'full plate',
+				protection : 6,
+			},
+		];
+
 		$scope.hero = {
 			name : 'noname',
 			image : 'images/hero.jpg',
@@ -16,10 +71,10 @@ angular.module('heroTrainerApp', [])
 			dexterity : 5,
 			agility : 5,
 			skill : 5,
-			//weapon : weapon[0],
+			weapon : weapon[0],
 			minDmg : 1,
 			maxDmg : 3, 
-			//armor : armor[0],
+			armor : armor[0],
 			HP : '',
 			gold : 100
 		}
@@ -48,11 +103,6 @@ angular.module('heroTrainerApp', [])
 		///////////////////////////
 		// HERO TRAINING         //
 		///////////////////////////
-
-		$scope.showMainTrainingsOptions = false;
-		$scope.showTrainingResults = false;
-		$scope.showMainWorkingOptions = false;
-		$scope.showTrainingResults = false;
 
 		$scope.goldCheck = function(price) {
 			if ($scope.hero.gold >= price * -1) {
@@ -235,6 +285,7 @@ angular.module('heroTrainerApp', [])
 		function trainingCalculation(successCheck, increase, cost, skillGain) {
 			resetHeroChangeObject();
 			$scope.totalTrainingResult = 0;
+			
 			for (var i = 0; i < $scope.trainingResults.length; i++) {
 				if (parseFloat(Math.random()).toFixed(2) <= successCheck) {
 					$scope.trainingResults[i].result = 'Success';
@@ -420,6 +471,8 @@ angular.module('heroTrainerApp', [])
 				$scope.showTrainingResults = false;
 				$scope.showMainWorkingOptions = false;
 				$scope.showWorkingResults = false;
+				$scope.showFightOption = false;
+				$scope.showCombatLog = false;
 			} else {
 				$scope.showMainTrainingsOptions = false;
 			}
@@ -643,6 +696,11 @@ angular.module('heroTrainerApp', [])
 			$scope.totalWorkSkillIncrease = Math.floor($scope.totalWorkSkillIncrease);
 			$scope.hero.gold += $scope.totalWorkGoldIncrease;
 			$scope.hero[skillName] += $scope.totalWorkSkillIncrease;
+			if (skillName === 'endurance') {
+				var currentHP = $scope.hero.HP;
+				$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
+				$scope.heroChange.HP = $scope.hero.HP - currentHP;
+			}
 			$scope.heroChange.gold += $scope.totalWorkGoldIncrease;
 			$scope.heroChange[skillName] += $scope.totalWorkSkillIncrease;
 			$scope.showMainWorkingOptions = false;
@@ -694,9 +752,234 @@ angular.module('heroTrainerApp', [])
 				$scope.showTrainingResults = false;
 				$scope.showMainTrainingsOptions = false;
 				$scope.showWorkingResults = false;
+				$scope.showFightOption = false;
+				$scope.showCombatLog = false;
 			} else {
 				$scope.showMainWorkingOptions = false;
 			}
+		}
+
+		///////////////////////////
+		// HERO FIGHT            //
+		///////////////////////////
+
+		$scope.fightPreview = function() {
+			if (!$scope.showFightOption) {
+				$scope.showFightOption = true;
+				$scope.showMainWorkingOptions = false;
+				$scope.showWorkingResults = false;
+				$scope.showTrainingResults = false;
+				$scope.showMainTrainingsOptions = false;
+				$scope.showCombatLog = false;
+				monsterGenerator();
+				$scope.currentWeek++;	
+			} else {
+				$scope.showFightOption = false;
+			}
+		}
+
+		$scope.comparisonObject = {
+			endurance : '',
+			strength : '',
+			dexterity : '',
+			agility : '',
+			skill : ''
+		}
+
+		$scope.fightLog = [];
+		$scope.fightResult = '';
+		$scope.fightResultClass = '';
+		$scope.fightResultButtonText = '';
+		$scope.fightResultButtonClass = '';
+
+		$scope.monster = {
+			type : 'Ork',
+			image : 'images/orc.png',
+			level : 1,
+			endurance : 5,
+			strength : 1,
+			dexterity : 1,
+			agility : 1,
+			skill : 1,
+			weapon : "",
+			armor : "",
+			HP : 10,
+			gold : ""
+		}
+
+		var monsterGenerator = function() {
+			//set monster level to hero level
+			$scope.monster.level = $scope.hero.level;
+			//pick a weapon from array (max weapon = monster.level)
+			if ($scope.monster.level <= weapon.length) {
+				$scope.monster.weapon = weapon[Math.floor(Math.random() * $scope.monster.level)];
+			} else {
+				$scope.monster.weapon = weapon[Math.floor(Math.random() * weapon.length)];
+			}
+			//pick a armor from array (max armor = monster.level)
+			if ($scope.monster.level <= armor.length) {
+				$scope.monster.armor = armor[Math.floor(Math.random() * $scope.monster.level)];
+			} else {
+				$scope.monster.armor = armor[Math.floor(Math.random() * armor.length)];
+			}
+			//set attributes for endurance, strength, dexterity, agility and skill
+			var attributes = $scope.monster.level * 5;
+			$scope.monster.endurance = Math.round(Math.random() * (attributes - 1) + 1);
+			attributes = attributes - $scope.monster.endurance;
+			if ($scope.monster.endurance < 1) {
+				$scope.monster.endurance = 1;
+			}
+			$scope.monster.HP = Math.floor($scope.monster.endurance * 2);
+			$scope.monster.strength = Math.round(Math.random() * (attributes - 1) + 1);
+			attributes = attributes - $scope.monster.strength;
+			if ($scope.monster.strength < 1) {
+				$scope.monster.strength = 1;
+			}
+			$scope.monster.dexterity = Math.round(Math.random() * (attributes - 1) + 1);
+			attributes = attributes - $scope.monster.dexterity;
+			if ($scope.monster.dexterity < 1) {
+				$scope.monster.dexterity = 1;
+			}
+			$scope.monster.agility = Math.round(Math.random() * (attributes - 1) + 1);
+			attributes = attributes - $scope.monster.agility;
+			if ($scope.monster.agility < 1) {
+				$scope.monster.agility = 1;
+			}
+			$scope.monster.skill = Math.round(Math.random() * (attributes - 1) + 1);
+			attributes = attributes - $scope.monster.skill;
+			if ($scope.monster.skill < 1) {
+				$scope.monster.skill = 1;
+			}
+			//determine the loot for the monster
+			$scope.monster.gold = Math.floor(Math.random() * ($scope.monster.level / 2) * 10 + $scope.monster.level);
+			comparison('endurance');
+			comparison('strength');
+			comparison('dexterity');
+			comparison('agility');
+			comparison('skill');
+		}
+
+		var comparison = function(key) {
+			if ($scope.hero[key] >= $scope.monster[key] + 5) {
+				$scope.comparisonObject[key] = 'a lot less';
+			} else if ($scope.hero[key] > $scope.monster[key]) {
+				$scope.comparisonObject[key] = 'less';
+			} else if ($scope.hero[key] === $scope.monster[key]) {
+				$scope.comparisonObject[key] = 'equally as';
+			} else if ($scope.hero[key] <= $scope.monster[key] + 5) {
+				$scope.comparisonObject[key] = 'a lot more';
+			} else if ($scope.hero[key] < $scope.monster[key]) {
+				$scope.comparisonObject[key] = 'more';
+			}
+		}
+
+		var heroHitCalc = function() {
+			// random change between 1 and 100 + (hero dex + hero skill)
+			return (Math.floor((Math.random() * 100) + 1) + ($scope.hero.dexterity * 0.25 + $scope.hero.skill));
+		}
+
+		var monsterHitCalc = function() {
+			// random change between 1 and 100 + (monster dex + monster skill)
+			return (Math.floor((Math.random() * 100) + 1) + ($scope.monster.dexterity * 0.25 + $scope.monster.skill));
+		}
+
+		var heroDodgeCalc = function() {
+			return (Math.floor((Math.random() * 50) + 1) + ($scope.hero.agility * .25));
+		}
+
+		var monsterDodgeCalc = function() {
+			return (Math.floor((Math.random() * 50) + 1) + ($scope.monster.agility * .25));
+		}
+
+		var heroDmgCalc = function() {
+			var heroDmg = Math.floor(Math.random()*($scope.hero.weapon.maxDmg-$scope.hero.weapon.minDmg + 1) + $scope.hero.weapon.minDmg + $scope.hero.strength) - $scope.monster.armor.protection;
+			$scope.fightLog.push({result: 'Hero causes ' + heroDmg + ' damage'});
+			return heroDmg;
+		}
+
+		var monsterDmgCalc = function() {
+			var monsterDmg = Math.floor(Math.random()*($scope.monster.weapon.maxDmg-$scope.monster.weapon.minDmg + 1) + $scope.monster.weapon.minDmg + $scope.monster.strength) - $scope.hero.armor.protection;
+			$scope.fightLog.push({result: 'Monster causes ' + monsterDmg + ' damage'});
+			return monsterDmg;
+		}
+
+		var heroDodge = function() {
+			if (monsterHitCalc() < heroDodgeCalc()) {
+				$scope.fightLog.push({result: 'Hero dodges'});	
+			} else {
+				$scope.fightLog.push({result: 'Monster hits'});
+				$scope.hero.HP = $scope.hero.HP - monsterDmgCalc();
+			}
+		}
+
+		var monsterDodge = function() {
+			if (heroHitCalc() < monsterDodgeCalc()) {
+				$scope.fightLog.push({result: 'Monster dodges'});
+			} else {
+				$scope.fightLog.push({result: 'Hero hits'});
+				$scope.monster.HP = $scope.monster.HP - heroDmgCalc();
+			}
+		}
+
+		var combatResult = function() {
+			if ($scope.hero.HP <= 0 && $scope.monster.HP > 0) {
+				$scope.fightResult = 'You Died!';
+				$scope.fightResultClass = 'red';
+				$scope.fightResultButtonText = 'OMG... WHAT HAPPENED???';
+				$scope.fightResultButtonClass = 'btn-danger';
+			}
+			if ($scope.hero.HP > 0 && $scope.monster.HP <= 0) {
+				$scope.fightResult = 'You win!';
+				$scope.fightResultClass = 'green';
+				$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
+				$scope.hero.fame += $scope.monster.level;
+				$scope.hero.gold += $scope.monster.gold;
+				$scope.hero.level++;
+				resetHeroChangeObject();
+				$scope.heroChange.fame = $scope.monster.level;
+				$scope.heroChange.gold = $scope.monster.gold;
+				$scope.fightResultButtonText = 'YEAH BABY!'
+				$scope.fightResultButtonClass = 'btn-success';
+			}
+		}
+
+		var combatSequence = function() {
+			if ($scope.hero.agility >= $scope.monster.agility) {
+				while ($scope.monster.HP > 0 && $scope.hero.HP > 0) {
+					monsterDodge();
+					$scope.fightLog.push({result: 'Monster has ' + $scope.monster.HP + ' HP left'});
+					$scope.fightLog.push({result: ''});
+					if ($scope.monster.HP <= 0) {
+						break;
+					}
+					heroDodge();
+					$scope.fightLog.push({result: 'Hero has ' + $scope.hero.HP + ' HP left'});
+					$scope.fightLog.push({result: ''});
+				}
+			}
+			if ($scope.hero.agility < $scope.monster.agility) {
+				while ($scope.monster.HP > 0 && $scope.hero.HP > 0) {
+					heroDodge();
+					$scope.fightLog.push({result: 'heroHP: ' + $scope.hero.HP});
+					$scope.fightLog.push({result: ''});
+					if ($scope.hero.HP <= 0) {
+						break;
+					}
+					monsterDodge();
+					$scope.fightLog.push({result: 'monsterHP: ' + $scope.monster.HP});
+					$scope.fightLog.push({result: ''});
+				}
+			}
+		}
+
+		$scope.fight = function() {
+			$scope.fightLog = [];
+			combatSequence();
+			combatResult();
+			console.log($scope.fightLog);
+			console.log($scope.fightResult);
+			$scope.showFightOption = false;
+			$scope.showCombatLog = true;
 		}
 
 	}])
