@@ -70,16 +70,17 @@
 							</tr>
 							<tr>
 								<th>Weapon</th>
-								<td>{{hero.weapon.name}}</td>
-								<td></td>
+								<td>{{hero.weapon.shopName}}</td>
+								<td class="green">{{heroChange.weapon}}</td>
 							</tr>
 							<tr>
 								<th>Armor</th>
-								<td>{{hero.armor.name}}</td>
-								<td></td>
+								<td>{{hero.armor.shopName}}</td>
+								<td class="green">{{heroChange.armor}}</td>
 							</tr>
 						</tbody>
 					</table>
+					<pre>{{monster | json}}</pre>
 				</div>
 
 				<!-- RIGHT SIDE - INTERACTIONS -->
@@ -87,9 +88,10 @@
 
 					<!-- MENU BUTTONS -->
 					<div class="row">
-						<button class="btn btn-primary" ng-click="trainingOptions()">Training</button>
-						<button class="btn btn-warning" ng-click="workingOptions()">Working</button>
-						<button class="btn btn-danger" ng-click="fightPreview()">Go looking for a fight</button>
+						<button class="btn btn-primary" ng-click="trainingOptions()">Train your skills</button>
+						<button class="btn btn-primary" ng-click="workingOptions()">Work and earn money</button>
+						<button class="btn btn-primary" ng-click="shopView()">Shop for better equipment</button>
+						<button class="btn btn-danger" ng-click="fightPreview()">Look for a fight</button>
 						<button class="btn btn-default pull-right">Week {{currentWeek}} of {{maxTime}}</button>
 					</div>
 
@@ -156,9 +158,9 @@
 							<p>The {{monster.type}} looks {{comparisonObject.dexterity}} dextrous than you.</p>
 							<p>The {{monster.type}} looks {{comparisonObject.agility}} angile than you.</p>
 							<p>The {{monster.type}} looks {{comparisonObject.skill}} skillful than you.</p>
-							<button class="btn btn-success fight-screen-button" ng-click="fightPreview()">Nah, rather not...</button>
-							<button class="btn btn-danger fight-screen-button" ng-click="fight()">Let's rock and roll</button>
-							<strong>Remember: If your hero dies during a fight, the game will be over!</strong>
+							<button class="btn btn-success fight-screen-button" ng-click="fight()">Let me hit stuff</button>
+							<button class="btn btn-danger fight-screen-button" ng-click="fightPreview()">Nah, let's wait</button>
+							<p><strong>Remember: If your hero dies during a fight, the game will be over!</strong></p>
 						</div>
 					</div>
 
@@ -168,6 +170,52 @@
 						<button class="btn fight-screen-button" ng-click="movingOn()" ng-class="fightResultButtonClass">{{fightResultButtonText}}</button>
 						<div class="col-xs-6 col-xs-offset-3" ng-repeat="entry in fightLog">
 							<p>{{entry.result}}</p>						
+						</div>
+					</div>
+
+					<!-- SHOP OPTIONS -->
+					<div class="row container-row" ng-show="showShop">
+						<div class="weapons shop-container">
+							<h3>Weapons</h3>
+							<button class="btn col-xs-3 shop-button" ng-repeat="weapon in weapon" ng-if="!$first" ng-disabled="priceCheck(weapon.price)" ng-click="buyWeaponConfirmation($index)">
+								<p>{{weapon.shopName}}</p>
+								<p>{{weapon.minDmg}}-{{weapon.maxDmg}} dmg / hit</p>
+								<p>{{weapon.price}} gold</p>
+							</button>
+						</div>
+						<br>
+						<div class="armor shop-container">
+							<h3>Armor</h3>
+							<button class="btn col-xs-3 shop-button" ng-repeat="armor in armor" ng-if="!$first" ng-disabled="priceCheck(armor.price)" ng-click="buyArmorConfirmation($index)">
+								<p>{{armor.shopName}}</p>
+								<p>Armor class {{armor.protection}}</p>
+								<p>{{armor.price}} gold</p>
+							</button>
+						</div>
+					</div>
+
+					<!-- SHOP CONFIRM -->
+					<div class="row shop-confirmation" ng-show="showShopConfirm">
+						<div class="row">
+							<span class="col-xs-6 col-xs-offset-3 big-text blue">Confirm your choice<span>
+						</div>
+						<div class="row" ng-show="weaponPurchase">
+							<div class="col-xs-6 col-xs-offset-3 confirmation-container">
+								<p>Are you sure you want to buy the</p>
+								<p><span class="big-text blue">{{buyItem.shopName}}</span> for <span class="big-text blue">{{buyItem.price}}</span> gold</p>						
+							</div>
+						</div>
+						<div class="row" ng-show="armorPurchase">
+							<div class="col-xs-6 col-xs-offset-3 confirmation-container">
+								<p>Are you sure you want to buy the</p>
+								<p><h4>{{buyItem.shopName}}</h4> for <h4>{{buyItem.price}}</h4> gold</p>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-xs-6 col-xs-offset-3">
+								<button class="btn btn-success fight-screen-button" ng-click="buyIt()">Yes, new toys!!!</button>
+								<button class="btn btn-danger fight-screen-button" ng-click="dontBuyIt()">Hm, let me think about it</button>
+							</div>
 						</div>
 					</div>
 

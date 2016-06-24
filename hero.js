@@ -12,62 +12,75 @@ angular.module('heroTrainerApp', [])
 		$scope.showTrainingResults = false;
 		$scope.showFightOption = false;
 		$scope.showCombatLog = false;
+		$scope.showShop = false;
 
-		var weapon = [
+		$scope.weapon = [
 			{	name : 'fists',
+				shopName : 'Fists',
 				price : 0,
 				minDmg : 1,
 				maxDmg : 3
 			},
 			{	name : 'a stick',
+				shopName : 'Stick',
 				price : 10,
 				minDmg : 2,
 				maxDmg : 3
 			},
 			{	name : 'a dagger',
+				shopName : 'Dagger',
 				price : 25,
 				minDmg : 2,
 				maxDmg : 5
 			},
 			{	name : 'a sword',
+				shopName : 'Sword',
 				price : 50,
 				minDmg : 4,
 				maxDmg : 6
 			},
 			{	name : 'a battle axe',
+				shopName : 'Battle Axe',
 				price : 100,
 				minDmg : 3,
 				maxDmg : 8
 			},
 			{	name : 'a greatsword',
+				shopName : 'Greatsword',
 				price : 250,
 				minDmg : 5,
 				maxDmg : 10
 			}
 		];
 
-		var armor = [
+		$scope.armor = [
 			{	name : 'normal clothes',
+				shopName : 'Street clothes',
 				price : 0,
 				protection : 1,
 			},
 			{	name : 'leather armor',
+				shopName : 'Leather Armor',
 				price : 25,
 				protection : 2,
 			},
 			{	name : 'reinforced leather armor',
+				shopName : 'Reinforced Leather Armor',
 				price : 50,
 				protection : 3,
 			},
 			{	name : 'chain mail',
+				shopName : 'Chain Mail Shirt',
 				price : 100,
 				protection : 4,
 			},
 			{	name : 'plate mail',
+				shopName : 'Plate Mail Hauberk',
 				price : 250,
 				protection : 5,
 			},
 			{	name : 'full plate',
+				shopName : 'Full Plate Armor',
 				price : 1000,
 				protection : 6,
 			},
@@ -83,10 +96,10 @@ angular.module('heroTrainerApp', [])
 			dexterity : 5,
 			agility : 5,
 			skill : 5,
-			weapon : weapon[0],
+			weapon : $scope.weapon[0],
 			minDmg : 1,
 			maxDmg : 3, 
-			armor : armor[0],
+			armor : $scope.armor[0],
 			HP : '',
 			gold : 100
 		}
@@ -105,7 +118,9 @@ angular.module('heroTrainerApp', [])
 				agility : '',
 				skill : '',
 				HP : '',
-				gold : ''
+				gold : '',
+				armor : '',
+				weapon : ''
 			}
 		}
 
@@ -115,6 +130,22 @@ angular.module('heroTrainerApp', [])
 		///////////////////////////
 		// HERO TRAINING         //
 		///////////////////////////
+
+		$scope.trainingOptions = function() {
+			console.log('training');
+			if (!$scope.showMainTrainingsOptions) {
+				$scope.showMainTrainingsOptions = true;
+				$scope.showTrainingResults = false;
+				$scope.showMainWorkingOptions = false;
+				$scope.showWorkingResults = false;
+				$scope.showFightOption = false;
+				$scope.showCombatLog = false;
+				$scope.showShop = false;
+				$scope.showShopConfirm = false;
+			} else {
+				$scope.showMainTrainingsOptions = false;
+			}
+		}
 
 		$scope.goldCheck = function(price) {
 			if ($scope.hero.gold >= price * -1) {
@@ -340,21 +371,7 @@ angular.module('heroTrainerApp', [])
 			} else if (check === 'Failed') {
 				return 'red';
 			}
-		}
-
-		$scope.trainingOptions = function() {
-			console.log('training');
-			if (!$scope.showMainTrainingsOptions) {
-				$scope.showMainTrainingsOptions = true;
-				$scope.showTrainingResults = false;
-				$scope.showMainWorkingOptions = false;
-				$scope.showWorkingResults = false;
-				$scope.showFightOption = false;
-				$scope.showCombatLog = false;
-			} else {
-				$scope.showMainTrainingsOptions = false;
-			}
-		}
+		}		
 
 		$scope.whichButtonTraining = function(index) {
 			//values passed: 
@@ -399,6 +416,21 @@ angular.module('heroTrainerApp', [])
 		///////////////////////////
 		// HERO WORK             //
 		///////////////////////////
+
+		$scope.workingOptions = function() {
+			if (!$scope.showMainWorkingOptions) {
+				$scope.showMainWorkingOptions = true;
+				$scope.showTrainingResults = false;
+				$scope.showMainTrainingsOptions = false;
+				$scope.showWorkingResults = false;
+				$scope.showFightOption = false;
+				$scope.showCombatLog = false;
+				$scope.showShop = false;
+				$scope.showShopConfirm = false;
+			} else {
+				$scope.showMainWorkingOptions = false;
+			}
+		}
 
 		$scope.findSkill = function(index) {
 			if (index === 'farm-1' || index === 'farm-2' || index === 'farm-3') {
@@ -630,19 +662,6 @@ angular.module('heroTrainerApp', [])
 			}
 		}
 
-		$scope.workingOptions = function() {
-			if (!$scope.showMainWorkingOptions) {
-				$scope.showMainWorkingOptions = true;
-				$scope.showTrainingResults = false;
-				$scope.showMainTrainingsOptions = false;
-				$scope.showWorkingResults = false;
-				$scope.showFightOption = false;
-				$scope.showCombatLog = false;
-			} else {
-				$scope.showMainWorkingOptions = false;
-			}
-		}
-
 		///////////////////////////
 		// HERO FIGHT            //
 		///////////////////////////
@@ -655,6 +674,8 @@ angular.module('heroTrainerApp', [])
 				$scope.showTrainingResults = false;
 				$scope.showMainTrainingsOptions = false;
 				$scope.showCombatLog = false;
+				$scope.showShop = false;
+				$scope.showShopConfirm = false;
 				monsterGenerator();
 				$scope.currentWeek++;	
 			} else {
@@ -695,16 +716,16 @@ angular.module('heroTrainerApp', [])
 			//set monster level to hero level
 			$scope.monster.level = $scope.hero.level;
 			//pick a weapon from array (max weapon = monster.level)
-			if ($scope.monster.level <= weapon.length) {
-				$scope.monster.weapon = weapon[Math.floor(Math.random() * $scope.monster.level)];
+			if ($scope.monster.level <= $scope.weapon.length) {
+				$scope.monster.weapon = $scope.weapon[Math.floor(Math.random() * $scope.monster.level)];
 			} else {
-				$scope.monster.weapon = weapon[Math.floor(Math.random() * weapon.length)];
+				$scope.monster.weapon = $scope.weapon[Math.floor(Math.random() * $scope.weapon.length)];
 			}
 			//pick a armor from array (max armor = monster.level)
-			if ($scope.monster.level <= armor.length) {
-				$scope.monster.armor = armor[Math.floor(Math.random() * $scope.monster.level)];
+			if ($scope.monster.level <= $scope.armor.length) {
+				$scope.monster.armor = $scope.armor[Math.floor(Math.random() * $scope.monster.level)];
 			} else {
-				$scope.monster.armor = armor[Math.floor(Math.random() * armor.length)];
+				$scope.monster.armor = $scope.armor[Math.floor(Math.random() * $scope.armor.length)];
 			}
 			//set attributes for endurance, strength, dexterity, agility and skill
 			var attributes = $scope.monster.level * 5;
@@ -866,5 +887,83 @@ angular.module('heroTrainerApp', [])
 			$scope.showCombatLog = true;
 		}
 
+		///////////////////////////
+		// HERO SHOP             //
+		///////////////////////////
+
+		$scope.showShopConfirm = false;
+		$scope.weaponPurchase = false;
+		$scope.armorPurchase = false;
+		$scope.buyItem = {};
+		var itemType;
+
+		$scope.shopView = function() {
+			console.log();
+			if (!$scope.showShop) {
+				$scope.showShop = true;
+				$scope.showFightOption = false;
+				$scope.showMainWorkingOptions = false;
+				$scope.showWorkingResults = false;
+				$scope.showTrainingResults = false;
+				$scope.showMainTrainingsOptions = false;
+				$scope.showCombatLog = false;
+				$scope.showShopConfirm = false;
+			} else {
+				$scope.showShop = false;
+			}
+		}
+
+		$scope.priceCheck = function(price) {
+			if ($scope.hero.gold >= price) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		$scope.buyWeaponConfirmation = function(index) {
+			$scope.buyItem = {};
+			$scope.showShopConfirm = true;
+			$scope.showShop = false;
+			$scope.weaponPurchase = true;
+			$scope.armorPurchase = false;
+			$scope.buyItem = $scope.weapon[index];
+			itemType = 0; //type set to weapon
+		}
+
+		$scope.buyArmorConfirmation = function(index) {
+			$scope.buyItem = {};
+			$scope.showShopConfirm = true;
+			$scope.showShop = false;
+			$scope.weaponPurchase = false;
+			$scope.armorPurchase = true;
+			$scope.buyItem = $scope.armor[index];
+			itemType = 1; //type set to armor
+		}
+
+		$scope.buyIt = function() {
+			resetHeroChangeObject();
+			if (itemType === 0) {
+				$scope.hero.weapon = $scope.buyItem;
+				$scope.heroChange.weapon = $scope.buyItem.shopName;
+				$scope.hero.gold -= $scope.buyItem.price;
+				$scope.heroChange.gold -= $scope.buyItem.price;
+			} else if (itemType === 1) {
+				$scope.hero.armor = $scope.buyItem;
+				$scope.heroChange.armor = $scope.buyItem.shopName;
+				$scope.hero.gold -= $scope.buyItem.price;
+				$scope.heroChange.gold -= $scope.buyItem.price;
+			}
+			$scope.showShopConfirm = false;
+			$scope.weaponPurchase = false;
+			$scope.armorPurchase = false;
+			$scope.currentWeek++;
+		}
+
+		$scope.dontBuyIt = function() {
+			$scope.showShopConfirm = false;
+			$scope.weaponPurchase = false;
+			$scope.armorPurchase = false;
+		}
 	}])
 

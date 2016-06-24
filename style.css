@@ -45,7 +45,48 @@
 	font-weight: bold;
 }
 
+.blue {
+	color: #00087A;
+}
+
 .fight-screen-button {
 	margin: 20px auto;
 }
 
+.shop-container {
+	clear: both;
+}
+
+.armor {
+	padding-top: 20px;
+}
+
+.shop-button {
+	background: #350085;
+	border: 1px solid #210052;
+	color: #fff;
+}
+
+.shop-button:hover {
+	background: #280063;
+	color: #fff;
+}
+
+.shop-button:active {
+	background: #2F1457;
+	color: #fff;
+}
+
+.shop-confirmation {
+	margin-top: 80px;
+}
+
+.big-text {
+	font-size: 150%;
+	font-weight: bold;
+}
+
+.confirmation-container {
+	margin-top: 30px;
+	margin-bottom: 30px;
+}
