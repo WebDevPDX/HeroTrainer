@@ -15,26 +15,32 @@ angular.module('heroTrainerApp', [])
 
 		var weapon = [
 			{	name : 'fists',
+				price : 0,
 				minDmg : 1,
 				maxDmg : 3
 			},
 			{	name : 'a stick',
+				price : 10,
 				minDmg : 2,
 				maxDmg : 3
 			},
 			{	name : 'a dagger',
+				price : 25,
 				minDmg : 2,
 				maxDmg : 5
 			},
 			{	name : 'a sword',
+				price : 50,
 				minDmg : 4,
 				maxDmg : 6
 			},
 			{	name : 'a battle axe',
+				price : 100,
 				minDmg : 3,
 				maxDmg : 8
 			},
 			{	name : 'a greatsword',
+				price : 250,
 				minDmg : 5,
 				maxDmg : 10
 			}
@@ -42,21 +48,27 @@ angular.module('heroTrainerApp', [])
 
 		var armor = [
 			{	name : 'normal clothes',
+				price : 0,
 				protection : 1,
 			},
 			{	name : 'leather armor',
+				price : 25,
 				protection : 2,
 			},
 			{	name : 'reinforced leather armor',
+				price : 50,
 				protection : 3,
 			},
 			{	name : 'chain mail',
+				price : 100,
 				protection : 4,
 			},
 			{	name : 'plate mail',
+				price : 250,
 				protection : 5,
 			},
 			{	name : 'full plate',
+				price : 1000,
 				protection : 6,
 			},
 		];
@@ -64,7 +76,7 @@ angular.module('heroTrainerApp', [])
 		$scope.hero = {
 			name : 'noname',
 			image : 'images/hero.jpg',
-			fame : '',
+			fame : 0,
 			level : 2,
 			endurance : 5,
 			strength : 5,
@@ -135,7 +147,7 @@ angular.module('heroTrainerApp', [])
 						index : 'end-3',
 						name : 'Rocky Stalone',
 						price : -100,
-						cost : 'Teaches you how to take a punch for 100 gold per week',
+						cost : 'Teaches you how to take a punch or two or three... for 100 gold per week',
 						increase : 10
 					},
 				]
@@ -282,10 +294,14 @@ angular.module('heroTrainerApp', [])
 		]
 		$scope.totalTrainingResult = 0;
 
-		function trainingCalculation(successCheck, increase, cost, skillGain) {
+		function trainingCalculation(successCheck, increase, skillName, cost) {
+			//reset data storage variables
 			resetHeroChangeObject();
 			$scope.totalTrainingResult = 0;
-			
+			//change display
+			$scope.showMainTrainingsOptions = false;
+			$scope.showTrainingResults = true;
+			//calculation
 			for (var i = 0; i < $scope.trainingResults.length; i++) {
 				if (parseFloat(Math.random()).toFixed(2) <= successCheck) {
 					$scope.trainingResults[i].result = 'Success';
@@ -294,159 +310,21 @@ angular.module('heroTrainerApp', [])
 					$scope.trainingResults[i].result = 'Failed';
 				}
 			}
+			//round results
 			$scope.totalTrainingResult = Math.round($scope.totalTrainingResult);
+			//update hero and heroChange objects
+			$scope.hero[skillName] += $scope.totalTrainingResult;
+			$scope.hero.gold -= cost;
+			$scope.heroChange[skillName] += $scope.totalTrainingResult;
+			$scope.heroChange.gold -= cost;
+			//if endurance is increased, recalculate HP
+			if (skillName === 'endurance') {
+				var currentHP = $scope.hero.HP;
+				$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
+				$scope.heroChange.HP = $scope.hero.HP - currentHP;
+			}
+			//add one week
 			$scope.currentWeek += 1;
-		}
-
-		function enduranceTrainOne() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.85, $scope.skillTrainingsOptions[0].options[0].increase);
-			$scope.hero.HP += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[0].options[0].price;
-			$scope.heroChange.HP = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[0].options[0].price;
-			//console.log($scope.heroChange);
-		}
-		function enduranceTrainTwo() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.75, $scope.skillTrainingsOptions[0].options[1].increase);
-			$scope.hero.HP += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[0].options[1].price;
-			$scope.heroChange.HP = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[0].options[1].price;
-			//console.log($scope.heroChange);
-		}
-		function enduranceTrainThree() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.65, $scope.skillTrainingsOptions[0].options[2].increase);
-			$scope.hero.HP += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[0].options[2].price;
-			$scope.heroChange.HP = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[0].options[2].price;
-			//console.log($scope.heroChange);
-		}
-		function strengthTrainOne() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.85, $scope.skillTrainingsOptions[1].options[0].increase);
-			$scope.hero.strength += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[1].options[0].price;
-			$scope.heroChange.strength = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[1].options[0].price;
-			//console.log($scope.heroChange);
-		}
-		function strengthTrainTwo() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.75, $scope.skillTrainingsOptions[1].options[1].increase);
-			$scope.hero.strength += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[1].options[1].price;
-			$scope.heroChange.strength = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[1].options[1].price;
-			//console.log($scope.heroChange);
-		}
-		function strengthTrainThree() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.65, $scope.skillTrainingsOptions[1].options[2].increase);
-			$scope.hero.strength += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[1].options[2].price;
-			$scope.heroChange.strength = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[1].options[2].price;
-			//console.log($scope.heroChange);
-		}
-		function dexterityTrainOne() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.85, $scope.skillTrainingsOptions[2].options[0].increase);
-			$scope.hero.dexterity += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[2].options[0].price;
-			$scope.heroChange.dexterity = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[2].options[0].price;
-			//console.log($scope.heroChange);
-		}
-		function dexterityTrainTwo() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.75, $scope.skillTrainingsOptions[2].options[1].increase);
-			$scope.hero.dexterity += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[2].options[1].price;
-			$scope.heroChange.dexterity = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[2].options[1].price;
-			//console.log($scope.heroChange);
-		}
-		function dexterityTrainThree() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.65, $scope.skillTrainingsOptions[2].options[2].increase);
-			$scope.hero.dexterity += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[2].options[2].price;
-			$scope.heroChange.dexterity = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[2].options[2].price;
-			//console.log($scope.heroChange);
-		}
-		function agilityTrainOne() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.85, $scope.skillTrainingsOptions[3].options[0].increase);
-			$scope.hero.agility += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[3].options[0].price;
-			$scope.heroChange.agility = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[3].options[0].price;
-			//console.log($scope.heroChange);
-		}
-		function agilityTrainTwo() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.75, $scope.skillTrainingsOptions[3].options[1].increase);
-			$scope.hero.agility += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[3].options[1].price;
-			$scope.heroChange.agility = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[3].options[1].price;
-			//console.log($scope.heroChange);
-		}
-		function agilityTrainThree() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.65, $scope.skillTrainingsOptions[3].options[2].increase);
-			$scope.hero.agility += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[3].options[2].price;
-			$scope.heroChange.agility = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[3].options[2].price;
-			//console.log($scope.heroChange);
-		}
-		function skillTrainOne() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.85, $scope.skillTrainingsOptions[4].options[0].increase);
-			$scope.hero.skill += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[4].options[0].price;
-			$scope.heroChange.skill = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[4].options[0].price;
-			//console.log($scope.heroChange);
-		}
-		function skillTrainTwo() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.75, $scope.skillTrainingsOptions[4].options[1].increase);
-			$scope.hero.skill += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[4].options[1].price;
-			$scope.heroChange.skill = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[4].options[1].price;
-			//console.log($scope.heroChange);
-		}
-		function skillTrainThree() {
-			$scope.showMainTrainingsOptions = false;
-			$scope.showTrainingResults = true;
-			trainingCalculation(0.65, $scope.skillTrainingsOptions[4].options[2].increase);
-			$scope.hero.skill += $scope.totalTrainingResult;
-			$scope.hero.gold += $scope.skillTrainingsOptions[4].options[2].price;
-			$scope.heroChange.skill = $scope.totalTrainingResult;
-			$scope.heroChange.gold = $scope.skillTrainingsOptions[4].options[2].price;
-			//console.log($scope.heroChange);
 		}
 
 		$scope.greenRedCheck = function(check) {
@@ -479,36 +357,42 @@ angular.module('heroTrainerApp', [])
 		}
 
 		$scope.whichButtonTraining = function(index) {
+			//values passed: 
+				//trainingCalculation(successCheck, increase, skillName, cost)
+				//base successCheck: 0.85 for T1 training, 0.75 for T2 training, 0.65 for T3 training
+				//increase: 0.5 for T1 training, 2 for T2 training, 10 for T3 training per successful day
+				//skillName: $scope.hero[key]
+				//cost: 5 for T1 training, 25 for T2 training, 100 for T3 training per successful day
 			if (index === 'end-1') {
-				enduranceTrainOne();
+				trainingCalculation(0.85, 0.5, 'endurance', 5);
 			} else if (index === 'end-2') {
-				enduranceTrainTwo();
+				trainingCalculation(0.75, 2, 'endurance', 25);
 			} else if (index === 'end-3') {
-				enduranceTrainThree();
+				trainingCalculation(0.65, 10, 'endurance', 100);
 			} else if (index === 'str-1') {
-				strengthTrainOne();
+				trainingCalculation(0.85, 0.5, 'strength', 5);
 			} else if (index === 'str-2') {
-				strengthTrainTwo();
+				trainingCalculation(0.75, 2, 'strength', 25);
 			} else if (index === 'str-3') {
-				strengthTrainThree();
+				trainingCalculation(0.65, 10, 'strength', 100);
 			} else if (index === 'dex-1') {
-				dexterityTrainOne();
+				trainingCalculation(0.85, 0.5, 'dexterity', 5);
 			} else if (index === 'dex-2') {
-				dexterityTrainTwo();
+				trainingCalculation(0.75, 2, 'dexterity', 25);
 			} else if (index === 'dex-3') {
-				dexterityTrainThree();
+				trainingCalculation(0.65, 10, 'dexterity', 100);
 			} else if (index === 'agi-1') {
-				agilityTrainOne();
+				trainingCalculation(0.85, 0.5, 'agility', 5);
 			} else if (index === 'agi-2') {
-				agilityTrainTwo();
+				trainingCalculation(0.75, 2, 'agility', 25);
 			} else if (index === 'agi-3') {
-				agilityTrainThree();
+				trainingCalculation(0.65, 10, 'agility', 100);
 			} else if (index === 'skill-1') {
-				skillTrainOne();
+				trainingCalculation(0.85, 0.5, 'skill', 5);
 			} else if (index === 'skill-2') {
-				skillTrainTwo();
+				trainingCalculation(0.75, 2, 'skill', 25);
 			} else if (index === 'skill-3') {
-				skillTrainThree();
+				trainingCalculation(0.65, 10, 'skill', 100);
 			}
 		}
 
@@ -932,7 +816,7 @@ angular.module('heroTrainerApp', [])
 				$scope.fightResult = 'You win!';
 				$scope.fightResultClass = 'green';
 				$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
-				$scope.hero.fame += $scope.monster.level;
+				$scope.hero.fame += parseInt($scope.monster.level);
 				$scope.hero.gold += $scope.monster.gold;
 				$scope.hero.level++;
 				resetHeroChangeObject();
