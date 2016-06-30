@@ -1,4 +1,7 @@
-//TODO : Change HP to Endurance in training
+//winning conditions - fame full for 156 fights = 12246
+// gold estimate = 228k
+
+// 2% of gold + fame = 4500 + 12250 = 16750
 
 'use strict';
 
@@ -6,13 +9,19 @@ angular.module('heroTrainerApp', [])
 
 	.controller('HeroController', ['$scope', function($scope) {
 
+		$scope.startGame = true;
+		$scope.start2 = false;
+		$scope.game = false;
 		$scope.showMainTrainingsOptions = false;
 		$scope.showTrainingResults = false;
 		$scope.showMainWorkingOptions = false;
-		$scope.showTrainingResults = false;
+		$scope.showWorkingResults = false;
 		$scope.showFightOption = false;
 		$scope.showCombatLog = false;
 		$scope.showShop = false;
+		$scope.win = false;
+		$scope.heroDied = false;
+		$scope.heroDeath = false;
 
 		$scope.weapon = [
 			{	name : 'fists',
@@ -86,25 +95,198 @@ angular.module('heroTrainerApp', [])
 			},
 		];
 
+		$scope.resultFame = [
+			{
+				fame: 15000,
+				rank: "The new king of Tarasul."
+			},
+			{
+				fame: 14000,
+				rank: "Military advisor to the king of Tarasul."
+			},
+			{
+				fame: 13000,
+				rank: "High General of the king's army."
+			},
+			{
+				fame: 12000,
+				rank: "a general in the king's army."
+			},
+			{
+				fame: 11000,
+				rank: "the gouvernor of the capitol."
+			},
+			{
+				fame: 10000,
+				rank: "Colonel in the king's army."
+			},
+			{
+				fame: 9000,
+				rank: "Captain in the king's army."
+			},
+			{
+				fame: 8000,
+				rank: "Mayor of one of the bigger towns of the kingdom."
+			},
+			{
+				fame: 7000,
+				rank: "Lieutenant in the king's army."
+			},
+			{
+				fame: 6000,
+				rank: "Steward of one of the kingdom's villages."
+			},
+			{
+				fame: 5000,
+				rank: "Sergeant First Class in the king's army."
+			},
+			{
+				fame: 4000,
+				rank: "Sergeant in the king's army."
+			},
+			{
+				fame: 3000,
+				rank: "Private in the king's army."
+			},
+			{
+				fame: 2000,
+				rank: "an unnamed soldier in the king's army - also called cannon fodder."
+			},
+			{
+				fame: 1000,
+				rank: "Latrine Cleaner in the king's army. At least you survived your training."
+			},
+			{
+				fame: 0,
+				rank: "A hermit in the mountains. Maybe you join one of the orc clans since you weren't enough of a threat for them to remember you."
+			},
+		]
+		$scope.resultGold = [
+			{
+				gold: 200000,
+				rank: "The financial power behind the kingdom. Right after making some more money..."
+			},
+			{
+				gold: 180000,
+				rank: "Financial Advisor to the king."
+			},
+			{
+				gold: 160000,
+				rank: "CEO of all the kingdom's privately owned banks."
+			},
+			{
+				gold: 140000,
+				rank: "Owner of your own trade empire."
+			},
+			{
+				gold: 120000,
+				rank: "Retiree in a medium sized town not too far out. Yes, you bought it and paid cash."
+			},
+			{
+				gold: 100000,
+				rank: "Business tycoon in the capitol."
+			},
+			{
+				gold: 80000,
+				rank: "Import / Export business owner in a medium sized town."
+			},
+			{
+				gold: 60000,
+				rank: "Retiree in a small village near the border. Yep, 12 easy payments over the next 5 years."
+			},
+			{
+				gold: 40000,
+				rank: "The towns blacksmith and spend the rest of your life shoeing horses."
+			},
+			{
+				gold: 20000,
+				rank: "A sightseer. Well, you have enough money to make it to the capitol and see a hero from a competing school that actually made it."
+			},
+			{
+				gold: 0,
+				rank: "broke and destitute beggar."
+			},
+		]
+
 		$scope.hero = {
-			name : 'noname',
+			name : 'Hero Name',
 			image : 'images/hero.jpg',
 			fame : 0,
-			level : 2,
+			level : 1,
 			endurance : 5,
 			strength : 5,
 			dexterity : 5,
 			agility : 5,
 			skill : 5,
 			weapon : $scope.weapon[0],
-			minDmg : 1,
-			maxDmg : 3, 
 			armor : $scope.armor[0],
 			HP : '',
-			gold : 100
+			gold : 100,
+			heroTitle : '',
+			owed: ''
+		}
+		$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
+
+		$scope.secondStartScreen = function() {
+			$scope.startGame = false;
+			$scope.start2 = true;
+		}
+		$scope.startTheGame = function() {
+			$scope.start2 = false;
+			$scope.game = true;
 		}
 
-		$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
+		var getTitle = function() {
+			if ($scope.hero.fame * 15 < $scope.hero.gold) {
+				if ($scope.hero.gold < $scope.resultGold[$scope.resultGold.length - 1].gold) {
+					$scope.hero.heroTitle = $scope.resultGold[$scope.resultGold.length].rank
+				} else if ($scope.hero.gold > $scope.resultGold[0].gold) {
+					$scope.hero.heroTitle = $scope.resultGold[0].rank
+				} else {
+					for (var i = 1; i < $scope.resultGold.length - 1; i++) {
+						if ($scope.hero.gold > $scope.resultGold[i].gold) {
+							$scope.hero.heroTitle = $scope.resultGold[i].rank
+							break;
+						}
+					}
+				}
+			} else {
+				if ($scope.hero.fame < $scope.resultFame[$scope.resultFame.length - 1].fame) {
+					$scope.hero.heroTitle = $scope.resultFame[$scope.resultFame.length].rank
+				} else if ($scope.hero.fame > $scope.resultFame[0].fame) {
+					$scope.hero.heroTitle = $scope.resultFame[0].rank
+				} else {
+					for (var i = 1; i < $scope.resultFame.length - 1; i++) {
+						if ($scope.hero.fame > $scope.resultFame[i].fame) {
+							$scope.hero.heroTitle = $scope.resultFame[i].rank
+							break;
+						}
+					}
+				}
+			}
+			$scope.hero.owed = parseInt($scope.hero.gold/100*98);		
+		}
+
+		function resetHeroObject() {
+			$scope.hero = {
+				name : 'Hero Name',
+				image : 'images/hero.jpg',
+				fame : 0,
+				level : 1,
+				endurance : 5,
+				strength : 5,
+				dexterity : 5,
+				agility : 5,
+				skill : 5,
+				weapon : $scope.weapon[0],
+				armor : $scope.armor[0],
+				HP : '',
+				gold : 100,
+				heroTitle : '',
+				owed: ''
+			}
+			$scope.hero.HP = Math.floor($scope.hero.endurance * 2.5);
+		}
 
 		$scope.heroChange = {};
 
@@ -125,7 +307,42 @@ angular.module('heroTrainerApp', [])
 		}
 
 		$scope.currentWeek = 0;
-		$scope.maxTime = 260;
+		$scope.maxTime = 156;
+
+		var addAWeek = function() {
+			$scope.currentWeek++;
+			if ($scope.currentWeek > $scope.maxTime) {
+				$scope.win = true;
+				$scope.game = false;
+				$scope.showMainTrainingsOptions = false;
+				$scope.showTrainingResults = false;
+				$scope.showMainWorkingOptions = false;
+				$scope.showWorkingResults = false;
+				$scope.showFightOption = false;
+				$scope.showCombatLog = false;
+				$scope.showShop = false;
+				getTitle();
+			}
+		}
+
+		$scope.restart = function() {
+			resetHeroObject();
+			resetHeroChangeObject();
+			$scope.currentWeek = 0;
+			$scope.startGame = false;
+			$scope.start2 = true;
+			$scope.game = false;
+			$scope.showMainTrainingsOptions = false;
+			$scope.showTrainingResults = false;
+			$scope.showMainWorkingOptions = false;
+			$scope.showWorkingResults = false;
+			$scope.showFightOption = false;
+			$scope.showCombatLog = false;
+			$scope.showShop = false;
+			$scope.win = false;
+			$scope.heroDied = false;
+			$scope.heroDeath = false;
+		}
 
 		///////////////////////////
 		// HERO TRAINING         //
@@ -355,7 +572,7 @@ angular.module('heroTrainerApp', [])
 				$scope.heroChange.HP = $scope.hero.HP - currentHP;
 			}
 			//add one week
-			$scope.currentWeek += 1;
+			addAWeek();
 		}
 
 		$scope.greenRedCheck = function(check) {
@@ -621,7 +838,7 @@ angular.module('heroTrainerApp', [])
 			$scope.heroChange[skillName] += $scope.totalWorkSkillIncrease;
 			$scope.showMainWorkingOptions = false;
 			$scope.showWorkingResults = true;
-			$scope.currentWeek += 1;
+			addAWeek();
 		}
 
 		$scope.whichButtonWork = function(index) {
@@ -677,7 +894,7 @@ angular.module('heroTrainerApp', [])
 				$scope.showShop = false;
 				$scope.showShopConfirm = false;
 				monsterGenerator();
-				$scope.currentWeek++;	
+				addAWeek();	
 			} else {
 				$scope.showFightOption = false;
 			}
@@ -765,13 +982,13 @@ angular.module('heroTrainerApp', [])
 		}
 
 		var comparison = function(key) {
-			if ($scope.hero[key] >= $scope.monster[key] + 5) {
+			if ($scope.hero[key] >= $scope.monster[key] + 50) {
 				$scope.comparisonObject[key] = 'a lot less';
 			} else if ($scope.hero[key] > $scope.monster[key]) {
 				$scope.comparisonObject[key] = 'less';
 			} else if ($scope.hero[key] === $scope.monster[key]) {
 				$scope.comparisonObject[key] = 'equally as';
-			} else if ($scope.hero[key] <= $scope.monster[key] + 5) {
+			} else if ($scope.hero[key] <= $scope.monster[key] + 50) {
 				$scope.comparisonObject[key] = 'a lot more';
 			} else if ($scope.hero[key] < $scope.monster[key]) {
 				$scope.comparisonObject[key] = 'more';
@@ -830,8 +1047,9 @@ angular.module('heroTrainerApp', [])
 			if ($scope.hero.HP <= 0 && $scope.monster.HP > 0) {
 				$scope.fightResult = 'You Died!';
 				$scope.fightResultClass = 'red';
-				$scope.fightResultButtonText = 'OMG... WHAT HAPPENED???';
+				$scope.fightResultButtonText = 'OMG...';
 				$scope.fightResultButtonClass = 'btn-danger';
+				$scope.heroDied = true;
 			}
 			if ($scope.hero.HP > 0 && $scope.monster.HP <= 0) {
 				$scope.fightResult = 'You win!';
@@ -843,8 +1061,7 @@ angular.module('heroTrainerApp', [])
 				resetHeroChangeObject();
 				$scope.heroChange.fame = $scope.monster.level;
 				$scope.heroChange.gold = $scope.monster.gold;
-				$scope.fightResultButtonText = 'YEAH BABY!'
-				$scope.fightResultButtonClass = 'btn-success';
+				$scope.heroDied = false;
 			}
 		}
 
@@ -885,6 +1102,21 @@ angular.module('heroTrainerApp', [])
 			console.log($scope.fightResult);
 			$scope.showFightOption = false;
 			$scope.showCombatLog = true;
+		}
+
+		$scope.theEnd = function() {
+			$scope.startGame = false;
+			$scope.start2 = false;
+			$scope.game = false;
+			$scope.showMainTrainingsOptions = false;
+			$scope.showTrainingResults = false;
+			$scope.showMainWorkingOptions = false;
+			$scope.showWorkingResults = false;
+			$scope.showFightOption = false;
+			$scope.showCombatLog = false;
+			$scope.showShop = false;
+			$scope.win = false;
+			$scope.heroDeath = true;
 		}
 
 		///////////////////////////
@@ -957,7 +1189,7 @@ angular.module('heroTrainerApp', [])
 			$scope.showShopConfirm = false;
 			$scope.weaponPurchase = false;
 			$scope.armorPurchase = false;
-			$scope.currentWeek++;
+			addAWeek();
 		}
 
 		$scope.dontBuyIt = function() {

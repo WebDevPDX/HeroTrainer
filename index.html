@@ -9,7 +9,72 @@
 <body>
 	<div class="wrapper">
 		<div class="container" ng-controller="HeroController">
-			<div class="row">
+			
+			<!-- START GAME -->
+			<div class="row win-screen" ng-if="startGame">
+				<div class="win-result">
+					<h1 class="green">Welcome to Hero Trainer.</h1>
+					<br>
+					<p>In the kingdom of Tarasul heros have a long and colorful history.</p>
+					<p>Yes, they have been saving princesses and slaying dragons. But not only that. Instead of armies clashing and hundreds of people dying in bloody fights, heros of opposing armies have been challenging each other to single combat. </p>
+					<p>While still brutal, the 'winner-takes-it-all' mentality has prevented a lot of bloodshed and allowed Tarasul to thrive.</p>
+					<p>While everybody can declare themselves a hero and start working towards the greater good, few will survive this for long. To help young would be heros on the way, hero academies have popped up everywhere in the kingdom and most are cometing with each other.</p>
+					<p>This is no wonder as there are stories of trainees gaining enough gold and fame to actually become kings.</p>
+					<br>
+					<p>You have been a hero yourself for a long time. But you don't just have the muscle you also have the brain. And you know that the longer you keep fighting, the more likely it is that you will find an untimely end.</p>
+					<p>So you decided to put your knowledge to good use and started your own little hero academy. Well, to be honest, currently it is more a training camp. But as word spreads, you quickly have your first trainee waiting at your door. Why wait, you figure. Let's get to training.</p>
+					<button class="btn btn-primary" ng-click="secondStartScreen()">Got it!</button>
+				</div>
+			</div>
+
+			<!-- START2 -->
+			<div class="row win-screen" ng-if="start2">
+				<div class="win-result">
+					<h1 class="red">Training Contract.</h1>
+					<br>
+					<span>I, </span>
+					<input type="text" ng-model="hero.name">
+					<span> enter willingly into a training contract with Care Bear Hero Academy.</span>
+					<p>I will receive instruction for the next 156 weeks (3 years) and will contuct myself as a future hero. I will work hard, pay attention to my teacher and strive to become the greatest hero the kingdom of Tarasul has ever seen.</p>
+					<p>I will train to improve myself. </p>
+					<p>I will work to earn gold and improve myself.</p>
+					<p>I will fight enemies of the kingdom to increase my fame.</p>
+					<p>I will pay for my own armor when my trainer tells me to upgrade it.</p>
+					<br>
+					<p><small>After my contract is concluded, I will pay 98% of my earned gold to Care Bear Hero Academy and move on towards new goals.</small></p>
+					<button class="btn btn-primary" ng-click="startTheGame()">Sign contract</button>
+				</div>
+			</div>
+
+			<!-- WIN SCREEN -->
+			<div class="row win-screen" ng-if="win">
+				<div class="win-result">
+					<h1 class="green">CONGRATULATIONS</h1>
+					<h3>{{hero.name}}, you finished your training at Care Bear Hero Academy.</h3>
+					<p>The 3 years of hand holding, hugging it out and moral support are over.</p>
+					<p>Time to move on to new things.</p>
+					<p>During the training {{hero.name}} saved up a total of <strong>{{hero.gold}}</strong> gold and grew his fame to <strong>{{hero.fame}}</strong></p>
+					<p>For all the help in wiping your tears away, you owe the school <strong class="red">{{hero.owed}}</strong> gold, payable <strong class="red">RIGHT NOW</strong> in <strong class="red">CASH</strong>.</p>
+					<hr>
+					<p>Yourself? After having kicked out your trainee and gotten paid, you decide that it isn't worth the hassle. However, due to the your school got you and the money you made of your student, you move on to a life as:</p>
+					<h3>{{hero.heroTitle}}</h3>
+				</div>
+			</div>
+			
+			<!-- DEATH SCREEN -->
+			<div class="row death-screen" ng-if="heroDeath">
+				<div class="death-result">
+					<h1 class="red">YOUR TRAINEE GOT KILLED!</h1>
+					<h3>{{hero.name}}, died in battle No.: {{monster.level}} after only {{currentWeek}} weeks in training.</h3>
+					<p>The 3 years of training come to premature end.</p>
+					<p>You hope nobody hears about what happened to your last trainee.</p>
+					<br>
+					<p>But maybe you can find a new student...</p>
+					<button class="btn btn-primary" ng-click="restart()">Search for a new trainee and start over</button>
+				</div>
+			</div>
+
+			<div class="row" ng-if="game">
 
 				<!-- HERO FRAME -->
 				<div class="hero-frame col-xs-3" id="heroFrame">
@@ -80,7 +145,8 @@
 							</tr>
 						</tbody>
 					</table>
-					<pre>{{monster | json}}</pre>
+					<!-- <pre>{{hero | json}}</pre>
+					<pre>{{monster | json}}</pre> -->
 				</div>
 
 				<!-- RIGHT SIDE - INTERACTIONS -->
@@ -88,10 +154,10 @@
 
 					<!-- MENU BUTTONS -->
 					<div class="row">
-						<button class="btn btn-primary" ng-click="trainingOptions()">Train your skills</button>
-						<button class="btn btn-primary" ng-click="workingOptions()">Work and earn money</button>
-						<button class="btn btn-primary" ng-click="shopView()">Shop for better equipment</button>
-						<button class="btn btn-danger" ng-click="fightPreview()">Look for a fight</button>
+						<button class="btn btn-primary" ng-click="trainingOptions()" ng-disabled="heroDied">Train your skills</button>
+						<button class="btn btn-primary" ng-click="workingOptions()" ng-disabled="heroDied">Work and earn money</button>
+						<button class="btn btn-primary" ng-click="shopView()" ng-disabled="heroDied">Shop for better equipment</button>
+						<button class="btn btn-danger" ng-click="fightPreview()" ng-disabled="heroDied">Look for a fight</button>
 						<button class="btn btn-default pull-right">Week {{currentWeek}} of {{maxTime}}</button>
 					</div>
 
@@ -167,9 +233,11 @@
 					<!-- FIGHT RESULT -->
 					<div class="row container-row" ng-show="showCombatLog">
 						<h3 class="col-xs-3 col-xs-offset-3" ng-class="fightResultClass">{{fightResult}}</h3>
-						<button class="btn fight-screen-button" ng-click="movingOn()" ng-class="fightResultButtonClass">{{fightResultButtonText}}</button>
 						<div class="col-xs-6 col-xs-offset-3" ng-repeat="entry in fightLog">
 							<p>{{entry.result}}</p>						
+						</div>
+						<div  ng-if="heroDied">
+							<button class="btn fight-screen-button" ng-click="theEnd()" ng-class="fightResultButtonClass">{{fightResultButtonText}}</button>
 						</div>
 					</div>
 
